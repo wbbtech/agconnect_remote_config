@@ -32,13 +32,13 @@ class RemoteConfigException implements Exception {
   RemoteConfigException({this.code, this.message, this.throttleEndTimeMillis});
 
   /// 错误码
-  final int code;
+  final int? code;
 
   /// 错误描述
-  final String message;
+  final String? message;
 
   /// 限流时间，单位为毫秒
-  final int throttleEndTimeMillis;
+  final int? throttleEndTimeMillis;
 
   @override
   String toString() {

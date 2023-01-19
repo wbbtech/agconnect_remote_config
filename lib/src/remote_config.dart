@@ -38,7 +38,7 @@ class AGCRemoteConfig {
   static final AGCRemoteConfig instance = AGCRemoteConfig();
 
   /// 设置本地默认参数
-  Future<void> applyDefaults(Map<String, dynamic> defaults) {
+  Future<void> applyDefaults(Map<String, dynamic>? defaults) {
     Map<String, String> map = Map();
     defaults?.forEach((String key, dynamic value) {
       map[key] = value.toString();
@@ -47,13 +47,13 @@ class AGCRemoteConfig {
         .invokeMethod('applyDefaults', <String, dynamic>{'defaults': map});
   }
   /// 返回获取自定义属性
-  Future<Map> getCustomAttributes() {
+  Future<Map?> getCustomAttributes() {
     return _channel.invokeMethod('getCustomAttributes');
   }
   /// 设置自定义属性参数
   Future<void> setCustomAttributes(Map<String, dynamic> customAttributes) {
     Map<String, String> map = Map();
-    customAttributes?.forEach((String key, dynamic value) {
+    customAttributes.forEach((String key, dynamic value) {
       map[key] = value.toString();
     });
     return _channel
@@ -65,11 +65,11 @@ class AGCRemoteConfig {
   }
 
   /// 从云端拉取最新的配置数据，拉取默认间隔12小时，12小时内返回缓存数据
-  Future<void> fetch({int intervalSeconds}) {
+  Future<void> fetch({int? intervalSeconds}) {
     return _channel.invokeMethod('fetch',
-        <String, int>{'intervalSeconds': intervalSeconds}).catchError((e) {
-      int code = int.tryParse(e.code);
-      int throttleEndTime =
+        <String, int?>{'intervalSeconds': intervalSeconds}).catchError((e) {
+      int? code = int.tryParse(e.code);
+      int? throttleEndTime =
       e.details != null ? e.details['throttleEndTime'] : null;
       throw RemoteConfigException(
           code: code,
@@ -79,14 +79,14 @@ class AGCRemoteConfig {
   }
 
   /// 返回Key对应的String类型的Value值
-  Future<String> getValue(String key) {
-    assert(key != null);
+  Future<String?> getValue(String key) async{
+    if(key.isEmpty) return null;
     return _channel.invokeMethod('getValue', <String, String>{'key': key});
   }
 
   /// 返回Key对应的来源
-  Future<RemoteConfigSource> getSource(String key) {
-    assert(key != null);
+  Future<RemoteConfigSource?> getSource(String key) async{
+    if(key.isEmpty) return null;
     return _channel
         .invokeMethod('getSource', <String, String>{'key': key}).then((value) {
       switch (value) {
@@ -103,7 +103,7 @@ class AGCRemoteConfig {
   }
 
   /// 返回默认值和云端值合并后的所有值
-  Future<Map> getMergedAll() {
+  Future<Map?> getMergedAll() {
     return _channel.invokeMethod('getMergedAll');
   }
 
